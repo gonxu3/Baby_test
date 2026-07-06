@@ -58,7 +58,10 @@ def generate_content(week):
 def send_email(subject, body):
     msg = MIMEMultipart("alternative")
     msg["From"] = os.environ["EMAIL_FROM"]
-    msg["To"] = os.environ["EMAIL_TO"]
+    
+    # Soporta múltiples destinatarios separados por coma
+    recipients = [email.strip() for email in os.environ["EMAIL_TO"].split(",")]
+    msg["To"] = ", ".join(recipients)
     msg["Subject"] = subject
 
     msg.attach(MIMEText(body, "plain", "utf-8"))
@@ -66,8 +69,7 @@ def send_email(subject, body):
     with smtplib.SMTP(os.environ["SMTP_HOST"], int(os.environ["SMTP_PORT"])) as server:
         server.starttls()
         server.login(os.environ["SMTP_USER"], os.environ["SMTP_PASSWORD"])
-        server.sendmail(msg["From"], msg["To"], msg.as_string())
-
+        server.sendmail(msg["From"], recipients, msg.as_string())
 
 def main():
     week = get_current_week()
