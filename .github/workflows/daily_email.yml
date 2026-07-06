@@ -26,5 +26,5 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           EMAIL_FROM: ${{ secrets.SMTP_USER }}
-          EMAIL_TO: gmilinares@gmail.com
+          EMAIL_TO: gmilinares@gmail.com,amaiagz@outlook.es
         run: python daily_email/main.py
