@@ -9,6 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import date, timedelta
+import time
 
 from dotenv import load_dotenv
 import urllib.request
@@ -31,7 +32,7 @@ def get_current_week():
 
 def generate_content(week):
     api_key = os.environ["GEMINI_API_KEY"]
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key={api_key}"
     next_week = week + 1 if week < GESTATION_WEEKS else week
 
     prompt = (
@@ -47,38 +48,18 @@ def generate_content(week):
     )
 
     payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]})
-    req = urllib.request.Request(url, data=payload.encode("utf-8"), headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req) as resp:
-        data = json.loads(resp.read())
-    return data["candidates"][0]["content"]["parts"][0]["text"]
-
-
-def send_email(subject, body):
-    msg = MIMEMultipart("alternative")
-    msg["From"] = os.environ["EMAIL_FROM"]
-    msg["To"] = os.environ["EMAIL_TO"]
-    msg["Subject"] = subject
-
-    msg.attach(MIMEText(body, "plain", "utf-8"))
-
-    with smtplib.SMTP(os.environ["SMTP_HOST"], int(os.environ["SMTP_PORT"])) as server:
-        server.starttls()
-        server.login(os.environ["SMTP_USER"], os.environ["SMTP_PASSWORD"])
-        server.sendmail(msg["From"], msg["To"], msg.as_string())
-
-
-def main():
-    week = get_current_week()
-    print(f"Semana actual de gestacion: {week}")
-    print("Generando contenido...")
-
-    content = generate_content(week)
-    print("Contenido generado. Enviando correo...")
-
-    subject = f"Semana {week} de embarazo - Tu resumen diario"
-    send_email(subject, content)
-    print("Correo enviado exitosamente!")
-
-
-if __name__ == "__main__":
-    main()
+    
+    # Reintentar hasta 3 veces con espera incremental
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(url, data=payload.encode("utf-8"), headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req) as resp:
+                data = json.loads(resp.read())
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < 2:
+                wait_time = (attempt + 1) * 10
+                print(f"Rate limit alcanzado. Esperando {wait_time} segundos...")
+                time.sleep(wait_time)
+            else:
+                raise
