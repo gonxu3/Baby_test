@@ -11,8 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+from groq import Groq
 
 load_dotenv()
 
@@ -30,7 +29,7 @@ def get_current_week():
 
 
 def generate_content(week):
-    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    client = Groq(api_key=os.environ["GROQ_API_KEY"])
     next_week = week + 1 if week < GESTATION_WEEKS else week
 
     prompt = (
@@ -45,11 +44,13 @@ def generate_content(week):
         f"Usa un tono cercano, positivo y reconfortante. No uses formato markdown."
     )
 
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7,
+        max_tokens=1500
     )
-    return response.text
+    return response.choices[0].message.content
 
 
 def send_email(subject, body):
