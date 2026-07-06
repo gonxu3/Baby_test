@@ -32,7 +32,7 @@ def get_current_week():
 
 def generate_content(week):
     api_key = os.environ["GEMINI_API_KEY"]
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     next_week = week + 1 if week < GESTATION_WEEKS else week
 
     prompt = (
