@@ -2,29 +2,29 @@ name: Daily Pregnancy Email
 
 on:
   schedule:
-	- cron: '0 12 * * *'  # Todos los dias a las 12:00 UTC (7:00 AM Colombia, 6:00 AM Mexico)
-  workflow_dispatch:  # Permite ejecucion manual
+    - cron: '0 12 * * *'
+  workflow_dispatch:
 
 jobs:
   send-email:
-	runs-on: ubuntu-latest
-	steps:
-	  - uses: actions/checkout@v4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-	  - uses: actions/setup-python@v5
-		with:
-		  python-version: '3.12'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-	  - name: Install dependencies
-		run: pip install python-dotenv
+      - name: Install dependencies
+        run: pip install python-dotenv
 
-	  - name: Run daily email script
-		env:
-		  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-		  SMTP_HOST: smtp.gmail.com
-		  SMTP_PORT: '587'
-		  SMTP_USER: ${{ secrets.SMTP_USER }}
-		  SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-		  EMAIL_FROM: ${{ secrets.SMTP_USER }}
-		  EMAIL_TO: gmilinares@gmail.com
-		run: python daily_email/main.py
+      - name: Run daily email script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: '587'
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.SMTP_USER }}
+          EMAIL_TO: gmilinares@gmail.com
+        run: python daily_email/main.py
