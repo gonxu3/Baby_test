@@ -16,7 +16,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install python-dotenv
+        run: pip install -r daily_email/requirements.txt
 
       - name: Run daily email script
         env:
