@@ -11,7 +11,8 @@ from email.mime.multipart import MIMEMultipart
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 load_dotenv()
 
@@ -29,8 +30,7 @@ def get_current_week():
 
 
 def generate_content(week):
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     next_week = week + 1 if week < GESTATION_WEEKS else week
 
     prompt = (
@@ -45,7 +45,10 @@ def generate_content(week):
         f"Usa un tono cercano, positivo y reconfortante. No uses formato markdown."
     )
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-exp",
+        contents=prompt
+    )
     return response.text
 
 
