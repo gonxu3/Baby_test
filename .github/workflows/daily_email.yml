@@ -2,7 +2,7 @@ name: Daily Pregnancy Email
 
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: "0 12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: pip install python-dotenv
@@ -22,7 +22,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SMTP_HOST: smtp.gmail.com
-          SMTP_PORT: '587'
+          SMTP_PORT: "587"
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           EMAIL_FROM: ${{ secrets.SMTP_USER }}
