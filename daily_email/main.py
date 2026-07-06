@@ -9,11 +9,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import date, timedelta
-import time
 
 from dotenv import load_dotenv
-import urllib.request
-import json
+import google.generativeai as genai
 
 load_dotenv()
 
@@ -31,8 +29,8 @@ def get_current_week():
 
 
 def generate_content(week):
-    api_key = os.environ["GEMINI_API_KEY"]
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    model = genai.GenerativeModel("gemini-1.5-flash")
     next_week = week + 1 if week < GESTATION_WEEKS else week
 
     prompt = (
@@ -47,22 +45,8 @@ def generate_content(week):
         f"Usa un tono cercano, positivo y reconfortante. No uses formato markdown."
     )
 
-    payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]})
-    
-    # Reintentar hasta 3 veces con espera incremental
-    for attempt in range(3):
-        try:
-            req = urllib.request.Request(url, data=payload.encode("utf-8"), headers={"Content-Type": "application/json"})
-            with urllib.request.urlopen(req) as resp:
-                data = json.loads(resp.read())
-            return data["candidates"][0]["content"]["parts"][0]["text"]
-        except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 2:
-                wait_time = (attempt + 1) * 10
-                print(f"Rate limit alcanzado. Esperando {wait_time} segundos...")
-                time.sleep(wait_time)
-            else:
-                raise
+    response = model.generate_content(prompt)
+    return response.text
 
 
 def send_email(subject, body):
