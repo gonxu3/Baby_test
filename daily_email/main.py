@@ -63,3 +63,34 @@ def generate_content(week):
                 time.sleep(wait_time)
             else:
                 raise
+
+
+def send_email(subject, body):
+    msg = MIMEMultipart("alternative")
+    msg["From"] = os.environ["EMAIL_FROM"]
+    msg["To"] = os.environ["EMAIL_TO"]
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+
+    with smtplib.SMTP(os.environ["SMTP_HOST"], int(os.environ["SMTP_PORT"])) as server:
+        server.starttls()
+        server.login(os.environ["SMTP_USER"], os.environ["SMTP_PASSWORD"])
+        server.sendmail(msg["From"], msg["To"], msg.as_string())
+
+
+def main():
+    week = get_current_week()
+    print(f"Semana actual de gestacion: {week}")
+    print("Generando contenido...")
+
+    content = generate_content(week)
+    print("Contenido generado. Enviando correo...")
+
+    subject = f"Semana {week} de embarazo - Tu resumen diario"
+    send_email(subject, content)
+    print("Correo enviado exitosamente!")
+
+
+if __name__ == "__main__":
+    main()
