@@ -21,11 +21,22 @@ GESTATION_WEEKS = 40
 
 
 def get_current_week():
+    """Calcula la semana de gestación (1..GESTATION_WEEKS) basada en DUE_DATE.
+
+    Se calcula la fecha de inicio de la concepción como DUE_DATE - 40 semanas.
+    La semana se obtiene como (days_since_conception // 7) + 1, de modo que:
+      - días 0..6 => semana 1
+      - días 7..13 => semana 2
+    Esto corrige un off-by-one que hacía que, en algunos domingos, se devolviera
+    la semana anterior.
+    """
     conception_start = DUE_DATE - timedelta(weeks=GESTATION_WEEKS)
     today = date.today()
-    # Suma 1 día para que el domingo (inicio de semana) muestre la semana que comienza
-    days_pregnant = (today - conception_start).days + 1
-    week = days_pregnant // 7
+
+    days_pregnant = (today - conception_start).days
+    # semana: 1 para 0-6 días, 2 para 7-13, etc.
+    week = days_pregnant // 7 + 1
+
     return max(1, min(week, GESTATION_WEEKS))
 
 
