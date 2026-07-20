@@ -33,7 +33,7 @@ def get_current_week():
 
     # Ajustar conception_start al domingo anterior o igual.
     # date.weekday(): Monday=0 .. Sunday=6
-    days_to_subtract = (conception_start.weekday() + 1) % 7
+    days_to_subtract = (conception_start.weekday()) % 7
     conception_start_aligned = conception_start - timedelta(days=days_to_subtract)
 
     today = date.today()
