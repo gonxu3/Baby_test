@@ -26,9 +26,7 @@ def get_current_week():
     Implementación: alineamos los cortes de semana al DOMINGO.
     - Primero calculamos la fecha teórica de inicio de concepción: DUE_DATE - 40 semanas.
     - Luego la ajustamos al domingo anterior o igual (inicio de semana = domingo).
-    - La semana se obtiene como (days_since_aligned_conception // 7) + 1.
-
-    Esto garantiza que el número de semana cambie siempre en domingo.
+    - La semana se obtiene como (days_since_aligned_conception // 7).
     """
     # Fecha teórica de inicio de las 40 semanas
     conception_start = DUE_DATE - timedelta(weeks=GESTATION_WEEKS)
@@ -45,7 +43,8 @@ def get_current_week():
     if days_pregnant < 0:
         return 1
 
-    week = days_pregnant // 7 + 1
+    # Número de semanas completadas (1..GESTATION_WEEKS)
+    week = days_pregnant // 7
     return max(1, min(week, GESTATION_WEEKS))
 
 
