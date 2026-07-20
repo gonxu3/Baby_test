@@ -55,14 +55,14 @@ def generate_content(week):
     prompt = (
         f"Eres una experta en maternidad y embarazo. Hoy es {date.today().strftime('%d/%m/%Y')}. "
         f"Una pareja esta en la semana {week} de embarazo. Redacta un correo CONCISO en español con EXACTAMENTE esta estructura:\n\n"
-        f"1. UN parrafo (4-5 lineas) con informacion general de la semana {week}. Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen\n"
-        f"2. UN parrafo (4-5 lineas) sobre los cambios mas significativos del feto esta semana. Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen\n"
+        f"1. UN parrafo (4-5 lineas) con informacion general de la semana {week}. Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen. No hace falta que cites las referencias.\n"
+        f"2. UN parrafo (4-5 lineas) sobre los cambios mas significativos del feto esta semana. Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen. No hace falta que cites las referencias.\n"
         f"3. PROPUESTAS DE NOMBRES:\n"
         f"   - 3 nombres de niña originales, cortos (estilo: Naia). No incluyas Naia en el output.\n"
         f"   - 3 nombres de niño originales, cortos (estilo: Gael, Oliver). No incluyas ni Gael ni Oliver en las propuestas.\n"
         f"   - Incluye el significado breve de cada nombre\n"
-        f"4. RECOMENDACIONES (3-4 puntos concretos sobre estilo de vida, alimentacion, ejercicio, cuidados). Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen\n"
-        f"5. MENSAJE DE ANIMO (2-3 lineas motivadoras para la pareja). Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen\n\n"
+        f"4. RECOMENDACIONES (3-4 puntos concretos sobre estilo de vida, alimentacion, ejercicio, cuidados). Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen. No hace falta que cites las referencias.\n"
+        f"5. MENSAJE DE ANIMO (2-3 lineas motivadoras para la pareja). Procura usar hasta 5 fuentes/referencias/webs y hacer un resumen. No hace falta que cites las referencias.\n\n"
         f"Usa un tono cercano y calido. NO uses formato markdown, negritas ni asteriscos. Usa mayusculas para los titulos."
     )
 
